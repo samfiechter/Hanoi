@@ -23,16 +23,13 @@ hanoi.prototype = {
 	t.mesg = $('<div>').attr('style','width:50%;height:600px;float:left;overflow:scroll;');
 	c.append($('<div>').width('100%').append(t.canv).append(t.mesg));	
 	t.code = $('<input>').attr('type','textarea')
-	$.ajax({
-	    url:'./initial-code.txt',
-	    complete:function(data,status){
-                if(4== data.readyState && 200 == data.status){
-                    t.code.value(data.responseText);
-		}
-	    }});
+	var loader=$('<div>').change(function(){
+	    t.code.value(loader.text)})
+	    .load('./initial-code.txt');
 	t.step = $('<button>').text('Step').click(function(){t.step();});
 	t.go = $('<button>').text('Go').click(function(){t.go();});
 	t.reset = $('<button>').text('Reset/Load Function').click(function(){t.resetBoard();});
+	c.append($('<div>').append(t.code).append(t.step).append(t.go).append(t.step).append(t.reset));
 	t.resetBoard();
 	t.drawBoard();
     },
