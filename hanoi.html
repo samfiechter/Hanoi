@@ -3,6 +3,8 @@
     <title>Towers of Hanoi</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script type="text/javascript">
+// (C) sam fiechter 2015
+// use at yer own risk.
     function hanoi(home){
 	this.drawPage(home);
     }
@@ -18,18 +20,35 @@ hanoi.prototype = {
     moves:[],
     drawPage:function(c){
 	var t =this;
-	
 	t.canv = $('<canvas>').attr('style','width:50%;float:left;');
 	t.mesg = $('<div>').attr('style','width:50%;height:300px;float:left;overflow:scroll;background:white;');
 	c.append($('<div>').width('100%').append(t.canv).append(t.mesg)).attr("style","background:#fafafa;");	
-	t.code = $('<textarea>').attr('type','textarea').attr('style','width:100%;height:300px;overflow:scroll;');
-	var loader=$('<div>').change(function(){
-	    t.code.value(loader.text)})
-	    .load('./initial-code.txt');
-	t.step = $('<button>').text('Step').click(function(){t.next();});
-	t.go = $('<button>').text('Go').click(function(){t.go();});
+	t.code = $('<textarea>').attr('type','textarea').attr('style','width:100%;height:300px;overflow:scroll;').val($("#start").text);
+	t.stepb = $('<button>').text('Step').click(function(){t.next();}).disabled(true);
+	t.gob = $('<button>').text('Go').click(function(){t.go();}).disabled(true);
 	t.reset = $('<button>').text('Reset/Load Function').click(function(){t.resetBoard();});
-	c.append($('<div>').append(t.code).append(t.step).append(t.go).append(t.step).append(t.reset));
+
+	var div = $('<div>')
+	    .append(t.code)
+	    .append(t.stepb)
+	    .append(t.gob)
+	    .append(t.reset) 
+	    .on('keydown', 'textarea', function(e) { // from :http://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
+		var keyCode = e.keyCode || e.which; 
+		if (keyCode == 9) { 
+		    e.preventDefault();
+		    var start = $(this).get(0).selectionStart;
+		    var end = $(this).get(0).selectionEnd;
+		    // set textarea value to: text before caret + tab + text after caret
+		    $(this).val($(this).val().substring(0, start)
+				+ "\t"
+				+ $(this).val().substring(end));
+		    // put caret at right position again
+		    $(this).get(0).selectionStart =   $(this).get(0).selectionEnd = start + 1; 
+		} 
+	    });
+	
+	c.append(div);
 //	t.resetBoard();
 	t.drawBoard();
     },
@@ -42,9 +61,13 @@ hanoi.prototype = {
 	try{
 	    eval(t.code.val())
 	    Hanoi(t.board,0,2);
+	    t.stepb.disabled(false);
+	    t.gob.disabled(false);
+//	    t.gob.parent.append($('<button>').text('Show Solution').click(function(){t.code.val($("#solution").text);}));
 	} catch (e){
 	    alert(e.message);
 	}
+
     },
     drawBoard:function(){
 	var t =this;
@@ -91,7 +114,7 @@ hanoi.prototype = {
 	var to = ft[1];
 	var fromExists =  t.board[f].length > 0;
 	var canMove =  (t.board[to].length > 0 && t.board[f][0] < t.board[to][0]) || t.board[to].length ==0;
-	var text  = "MoveDisc(" + f + ", " + to + ");";
+	var text  = "MoveDisc(" + f + ", " + to +  ");";
 	if( fromExists && canMove){
 	    t.mesg.append($('<div>').text(text + "--OK!"));
 	    t.board[to].unshift(t.board[f].shift());
@@ -107,19 +130,25 @@ hanoi.prototype = {
 
     },
     next:function(){	
-	if(this.moves.length >1){
-	    this.move(this.moves.pop());
+	if(this.moves.length >0){
+	    this.move(this.moves.shift());
+	} else {
+	    this.mesg.append($('<div>').text("END"));
 	}
+	this.mesg.scrollTo(0,this.mesg[0].scrollHeight);
     },
     go:function(){
 	var t = this;
-	if(t.moves.length >1){
-	    t.move(t.moves.pop());
-	    window.setTimeout(500,function(){t.go();});
+	if(t.moves.length >0){
+	    t.move(t.moves.shift());
+	    window.setTimeout(function(){t.go();},500);
+	} else {
+	    t.mesg.append($('<div>').text("END"));
 	}
+	this.mesg.scrollTo(0,this.mesg[0].scrollHeight);
     },
-    pushMove:function(f,t){
-	this.moves.push([f,t]);
+    pushMove:function(f,t,o){
+	this.moves.push([f,t,o]);
     }
 }
 var myClass;
@@ -132,4 +161,27 @@ function MoveDisc(from,to){
     <h1>Towers of Hanoi</h1>
     <div>This page allows the vistor to write javascript code to move the towers of hanoi.  It will take care of the housekeeping (rules of the game) and allow the user to simply write the code to move the blocks.</div>
     </body>
+<div id="solution" style="display:none;">
+function Hanoi(b,f,t){
+	rMove(b,f,t,b[f].length);
+}
+
+function rMove(b,f,t,l){
+	if ( 1 == l){
+		MoveDisc(f,t);
+	} else{
+		var o = 3 - (f+t);
+		rMove(b,f,o,l-1);
+		MoveDisc(f,t);
+		rMove(b,o,t,l-1);
+	}	
+}</div>
+<div id="start" style="display:none;">
+function Hanoi(board ,from,to){
+// board is an array of with the discs on each peg. For example, the initial array is [[1,2,3,4,5,6],[],[]]
+// from is the peg to move the pile from
+// to is the peg to move the pile to 
+// use the function MoveDisc(from,to); to move the top disc on each peg.
+}
+</div>
 </html>
