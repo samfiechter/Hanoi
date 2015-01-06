@@ -20,17 +20,17 @@ hanoi.prototype = {
 	var t =this;
 	
 	t.canv = $('<canvas>').attr('style','width:50%;float:left;');
-	t.mesg = $('<div>').attr('style','width:50%;height:600px;float:left;overflow:scroll;');
-	c.append($('<div>').width('100%').append(t.canv).append(t.mesg));	
-	t.code = $('<input>').attr('type','textarea')
+	t.mesg = $('<div>').attr('style','width:50%;height:300px;float:left;overflow:scroll;background:white;');
+	c.append($('<div>').width('100%').append(t.canv).append(t.mesg)).attr("style","background:#fafafa;");	
+	t.code = $('<textarea>').attr('type','textarea').attr('style','width:100%;height:300px;overflow:scroll;');
 	var loader=$('<div>').change(function(){
 	    t.code.value(loader.text)})
 	    .load('./initial-code.txt');
-	t.step = $('<button>').text('Step').click(function(){t.step();});
+	t.step = $('<button>').text('Step').click(function(){t.next();});
 	t.go = $('<button>').text('Go').click(function(){t.go();});
 	t.reset = $('<button>').text('Reset/Load Function').click(function(){t.resetBoard();});
 	c.append($('<div>').append(t.code).append(t.step).append(t.go).append(t.step).append(t.reset));
-	t.resetBoard();
+//	t.resetBoard();
 	t.drawBoard();
     },
     resetBoard:function(){
@@ -41,7 +41,7 @@ hanoi.prototype = {
 	t.drawBoard();
 	try{
 	    eval(t.code.val())
-	    Hanoi(0,3);
+	    Hanoi(t.board,0,2);
 	} catch (e){
 	    alert(e.message);
 	}
@@ -97,19 +97,18 @@ hanoi.prototype = {
 	    t.board[to].unshift(t.board[f].shift());
 	    t.drawBoard();	
 	} else {
-	    text += "--ERROR: "
-	    if (formExists){
-		t.mesg.append($('<div>').text(text +"Can't Put Bigger Pegs on Smaller Pegs"));
+	    text += "--ERROR: ";
+	    if (fromExists){
+		t.mesg.append($('<div>').text(text + "Can't Put Bigger Pegs on Smaller Pegs"));
 	    } else {
-		t.mesg.append($('<div>').text("Can't Put Bigger Pegs on Smaller Pegs"));
+		t.mesg.append($('<div>').text(text +"No Peg to Move"));
 	    }
 	}
 
     },
-    step:function(){
-	
+    next:function(){	
 	if(this.moves.length >1){
-	    this.move(t.moves.pop());
+	    this.move(this.moves.pop());
 	}
     },
     go:function(){
