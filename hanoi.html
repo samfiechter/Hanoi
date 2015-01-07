@@ -102,7 +102,7 @@
         	  postfill.addColorStop(0,"black");
    		  postfill.addColorStop(0.5,"white");
         	  postfill.addColorStop(1,"black");
-                  
+                  ctx.fillStyle = postfill;
                   ctx.fillRect((k*sw)-fw,fh,2*fw,h-(2*fh));
                   for (var j=0;j<t.board[i].length;j++){
                       var ds = sw * (0.9*t.board[i][j]/maxdisc);
