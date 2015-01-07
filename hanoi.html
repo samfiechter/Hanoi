@@ -21,7 +21,13 @@
           drawPage:function(c){
               var t =this;
               t.canv = $('<canvas>').attr('style','width:50%;float:left;');
-              t.mesg = $('<div>').attr('style','width:50%;height:300px;float:left;overflow:scroll;background:white;');
+	      t.mesg = $('<div>').attr('style','width:50%;height:300px;float:left;overflow:scroll;background:white;');
+
+	      t.code = $('<textarea>').attr('type','textarea').attr('style','width:100%;height:300px;overflow:scroll;').val($("#start").text());
+              t.stepb = $('<button>').text('Step').click(function(){t.next();}).prop('disabled',true);
+              t.gob = $('<button>').text('Go').click(function(){t.go();}).prop('disabled',true);
+              t.reset = $('<button>').text('Reset/Load Function').click(function(){t.resetBoard();});
+
 	      c.append($('<div>').width('100%')
 		       .append(t.canv)
 		       .append(t.mesg)
@@ -29,12 +35,8 @@
 		       .append(t.gob)
 		       .append(t.reset))
 		  .attr("style","background:#fafafa;");
-              t.code = $('<textarea>').attr('type','textarea').attr('style','width:100%;height:300px;overflow:scroll;').val($("#start").text());
-              t.stepb = $('<button>').text('Step').click(function(){t.next();}).prop('disabled',true);
-              t.gob = $('<button>').text('Go').click(function(){t.go();}).prop('disabled',true);
-              t.reset = $('<button>').text('Reset/Load Function').click(function(){t.resetBoard();});
               
-              var div = $('<div>')
+	      var div = $('<div>')
                   .append(t.code)
                   .on('keydown', 'textarea', function(e) { // from :http://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
                       var keyCode = e.keyCode || e.which;
