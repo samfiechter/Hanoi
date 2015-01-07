@@ -22,7 +22,13 @@
               var t =this;
               t.canv = $('<canvas>').attr('style','width:50%;float:left;');
               t.mesg = $('<div>').attr('style','width:50%;height:300px;float:left;overflow:scroll;background:white;');
-              c.append($('<div>').width('100%').append(t.canv).append(t.mesg)).attr("style","background:#fafafa;");
+	      c.append($('<div>').width('100%')
+		       .append(t.canv)
+		       .append(t.mesg)
+		       .append(t.stepb)
+		       .append(t.gob)
+		       .append(t.reset))
+		  .attr("style","background:#fafafa;");
               t.code = $('<textarea>').attr('type','textarea').attr('style','width:100%;height:300px;overflow:scroll;').val($("#start").text());
               t.stepb = $('<button>').text('Step').click(function(){t.next();}).prop('disabled',true);
               t.gob = $('<button>').text('Go').click(function(){t.go();}).prop('disabled',true);
@@ -30,9 +36,6 @@
               
               var div = $('<div>')
                   .append(t.code)
-                  .append(t.stepb)
-                  .append(t.gob)
-                  .append(t.reset)
                   .on('keydown', 'textarea', function(e) { // from :http://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
                       var keyCode = e.keyCode || e.which;
                       if (keyCode == 9) {
