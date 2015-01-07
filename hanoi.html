@@ -20,8 +20,8 @@
           moves:[],
           drawPage:function(c){
               var t =this;
-              t.canv = $('<canvas>').attr('style','width:50%;height:300px;float:left;');
-	      t.mesg = $('<div>').attr('style','width:50%;height:275px;float:left;overflow:scroll;background:white;');
+              t.canv = $('<canvas>').attr('style','width:50%;float:left;');
+	      t.mesg = $('<div>').attr('style','width:50%;height:100%;float:left;overflow:scroll;background:white;');
 	      t.code = $('<textarea>').attr('type','textarea').attr('style','width:100%;height:300px;overflow:scroll;').val($("#start").text());
               t.stepb = $('<button>').text('Step').click(function(){t.next();}).prop('disabled',true);
               t.gob = $('<button>').text('Go').click(function(){t.go();}).prop('disabled',true);
